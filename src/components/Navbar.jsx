@@ -19,15 +19,19 @@ function Navbar() {
         <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/dashboard">
           Dashboard
         </Link>
+
         <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/courses">
           Corsi
         </Link>
+
         <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/exams">
           Esami
         </Link>
+
         <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/tasks">
           Task
         </Link>
+
         <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/timer">
           Timer
         </Link>
