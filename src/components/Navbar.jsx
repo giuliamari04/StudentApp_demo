@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
+import '../assets/styles/navbar.css'
 
 function Navbar() {
   const navigate = useNavigate()
@@ -10,40 +11,36 @@ function Navbar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 hidden h-screen w-64 border-r border-slate-800 bg-slate-900 p-6 md:block">
-      <h1 className="mb-10 text-2xl font-bold text-indigo-400">
-        StudyFlow
-      </h1>
+    <>
+      <aside className="sidebar">
+        <div className="logo">
+          <div className="logo-icon">📚</div>
+          <span>StudyFlow</span>
+        </div>
 
-      <nav className="flex flex-col gap-3">
-        <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/dashboard">
-          Dashboard
-        </Link>
+        <nav className="sidebar-nav">
+          <Link className="nav-link" to="/dashboard">Dashboard</Link>
+          <Link className="nav-link" to="/courses">Corsi</Link>
+          <Link className="nav-link" to="/exams">Esami</Link>
+          <Link className="nav-link" to="/tasks">Task</Link>
+          <Link className="nav-link" to="/timer">Timer</Link>
+        </nav>
 
-        <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/courses">
-          Corsi
-        </Link>
+        <div className="sidebar-footer">
+          <button onClick={logout} className="btn-danger logout-btn">
+            Logout
+          </button>
+        </div>
+      </aside>
 
-        <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/exams">
-          Esami
-        </Link>
-
-        <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/tasks">
-          Task
-        </Link>
-
-        <Link className="rounded-xl px-4 py-3 hover:bg-slate-800" to="/timer">
-          Timer
-        </Link>
+      <nav className="mobile-nav glass">
+        <Link className="nav-link" to="/dashboard">🏠</Link>
+        <Link className="nav-link" to="/courses">📚</Link>
+        <Link className="nav-link" to="/tasks">✅</Link>
+        <Link className="nav-link" to="/exams">📅</Link>
+        <Link className="nav-link" to="/timer">⏱️</Link>
       </nav>
-
-      <button
-        onClick={logout}
-        className="absolute bottom-6 left-6 right-6 rounded-xl bg-red-500 px-4 py-3 font-semibold hover:bg-red-600"
-      >
-        Logout
-      </button>
-    </aside>
+    </>
   )
 }
 

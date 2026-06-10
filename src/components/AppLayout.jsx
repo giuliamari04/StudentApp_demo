@@ -1,11 +1,12 @@
 import Navbar from './Navbar.jsx'
+import '../assets/styles/layout.css'
 
 function AppLayout({ children }) {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="app-shell">
       <Navbar />
 
-      <main className="p-6 md:ml-64">
+      <main className="main-content">
         {children}
       </main>
     </div>

@@ -1,0 +1,90 @@
+.course-form {
+  display: grid;
+  gap: 12px;
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.course-form button {
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.course-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.course-card {
+  border-radius: 24px;
+  padding: 22px;
+  transition: 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-3px);
+}
+
+.course-top {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.course-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(99, 102, 241, 0.18);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.course-card h2 {
+  margin: 0;
+}
+
+.course-card p {
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+
+.course-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.course-actions button {
+  border: none;
+  border-radius: 14px;
+  padding: 10px 14px;
+  color: white;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: var(--primary);
+}
+
+.delete-btn {
+  background: var(--danger);
+}
+
+@media (min-width: 768px) {
+  .course-form {
+    grid-template-columns: 1fr 1fr 120px 160px;
+  }
+
+  .course-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .course-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

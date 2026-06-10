@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
+import '../assets/styles/pages/courses.css'
+import '../assets/styles/pages/dashboard.css'
 
 function Courses() {
   const [courses, setCourses] = useState([])
@@ -100,83 +102,52 @@ function Courses() {
   }
 
   return (
-    <div>
-      <div className="mb-8">
-        <p className="text-slate-400">Organizza i tuoi insegnamenti</p>
-        <h1 className="text-4xl font-bold">Corsi</h1>
-      </div>
+  <div className="page">
+    <header className="page-header">
+      <h1>Corsi</h1>
+      <p>Gestisci insegnamenti, professori e CFU.</p>
+    </header>
 
-      <form
-        onSubmit={handleSubmit}
-        className="mb-8 grid gap-4 rounded-2xl bg-slate-900 p-6 md:grid-cols-4"
-      >
-        <input
-          className="rounded-xl bg-slate-800 px-4 py-3 outline-none"
-          placeholder="Nome corso"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+    <form onSubmit={handleSubmit} className="course-form glass">
+      <input className="input" placeholder="Nome corso" value={name} onChange={(e) => setName(e.target.value)} required />
+      <input className="input" placeholder="Professore" value={professor} onChange={(e) => setProfessor(e.target.value)} />
+      <input className="input" placeholder="CFU" type="number" value={credits} onChange={(e) => setCredits(e.target.value)} />
 
-        <input
-          className="rounded-xl bg-slate-800 px-4 py-3 outline-none"
-          placeholder="Professore"
-          value={professor}
-          onChange={(e) => setProfessor(e.target.value)}
-        />
+      <button className="btn-primary">
+        {editingId ? 'Salva' : 'Aggiungi'}
+      </button>
+    </form>
 
-        <input
-          className="rounded-xl bg-slate-800 px-4 py-3 outline-none"
-          placeholder="CFU"
-          type="number"
-          value={credits}
-          onChange={(e) => setCredits(e.target.value)}
-        />
+    <div className="course-grid">
+      {courses.map((course) => (
+        <article key={course.id} className="course-card glass">
+          <div className="course-top">
+            <div className="course-icon">📘</div>
 
-        <button
-          className="rounded-xl bg-indigo-600 px-4 py-3 font-semibold hover:bg-indigo-700"
-          type="submit"
-        >
-          {editingId ? 'Salva modifiche' : 'Aggiungi corso'}
-        </button>
-      </form>
-
-      <div className="grid gap-4 md:grid-cols-3">
-        {courses.map((course) => (
-          <div
-            key={course.id}
-            className="rounded-2xl bg-slate-900 p-6"
-          >
-            <h2 className="text-xl font-bold">{course.name}</h2>
-
-            <p className="mt-2 text-slate-400">
-              {course.professor || 'Nessun professore'}
-            </p>
-
-            <p className="mt-2 text-sm text-indigo-400">
-              {course.credits ? `${course.credits} CFU` : 'CFU non inseriti'}
-            </p>
-
-            <div className="mt-6 flex gap-3">
-              <button
-                onClick={() => startEdit(course)}
-                className="rounded-xl bg-slate-800 px-4 py-2 hover:bg-slate-700"
-              >
-                Modifica
-              </button>
-
-              <button
-                onClick={() => deleteCourse(course.id)}
-                className="rounded-xl bg-red-500 px-4 py-2 hover:bg-red-600"
-              >
-                Elimina
-              </button>
+            <div>
+              <h2>{course.name}</h2>
+              <p>{course.professor || 'Nessun professore'}</p>
             </div>
           </div>
-        ))}
-      </div>
+
+          <p style={{ marginTop: 16 }}>
+            {course.credits ? `${course.credits} CFU` : 'CFU non inseriti'}
+          </p>
+
+          <div className="course-actions">
+            <button className="edit-btn" onClick={() => startEdit(course)}>
+              Modifica
+            </button>
+
+            <button className="delete-btn" onClick={() => deleteCourse(course.id)}>
+              Elimina
+            </button>
+          </div>
+        </article>
+      ))}
     </div>
-  )
+  </div>
+)
 }
 
 export default Courses

@@ -1,51 +1,67 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
-import { useNavigate, Link } from 'react-router-dom'
+import '../assets/styles/auth.css'
 
 function Register() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   async function handleRegister(e) {
     e.preventDefault()
+    setLoading(true)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
+    const { error } = await supabase.auth.signUp({ email, password })
+
+    setLoading(false)
 
     if (error) {
       alert(error.message)
-    } else {
-      alert('Registrazione completata. Controlla la mail se richiesta.')
-      navigate('/login')
+      return
     }
+
+    alert('Registrazione completata.')
+    navigate('/login')
   }
 
   return (
-    <div>
-      <h1>Registrati</h1>
+    <div className="auth-page">
+      <div className="auth-card glass">
+        <div className="auth-logo">✨</div>
 
-      <form onSubmit={handleRegister}>
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <h1 className="auth-title">Create account</h1>
+        <p className="auth-subtitle">Inizia a organizzare lo studio</p>
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <form onSubmit={handleRegister} className="auth-form">
+          <input
+            className="input"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-        <button type="submit">Registrati</button>
-      </form>
+          <input
+            className="input"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-      <p>
-        Hai già un account? <Link to="/login">Accedi</Link>
-      </p>
+          <button className="btn-primary auth-button" disabled={loading}>
+            {loading ? 'Creazione...' : 'Registrati'}
+          </button>
+        </form>
+
+        <p className="auth-footer">
+          Hai già un account? <Link to="/login">Accedi</Link>
+        </p>
+      </div>
     </div>
   )
 }

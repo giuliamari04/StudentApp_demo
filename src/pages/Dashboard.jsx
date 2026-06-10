@@ -1,53 +1,76 @@
+import '../assets/styles/pages/dashboard.css'
+
 function Dashboard() {
   return (
-    <div>
-      <div className="mb-8">
-        <p className="text-slate-400">Bentornata 👋</p>
-        <h1 className="text-4xl font-bold">La tua giornata di studio</h1>
+    <div className="page">
+      <header className="page-header">
+        <h1>Good Morning, Giulia 👋</h1>
+        <p>Organizza studio, esami e task in un unico posto.</p>
+      </header>
+
+      <section className="stats-grid">
+        <div className="stat-card glass">
+          <div className="stat-icon">📚</div>
+          <div className="stat-value">4</div>
+          <div className="stat-label">Corsi attivi</div>
+        </div>
+
+        <div className="stat-card glass">
+          <div className="stat-icon">📅</div>
+          <div className="stat-value">2</div>
+          <div className="stat-label">Esami prossimi</div>
+        </div>
+
+        <div className="stat-card glass">
+          <div className="stat-icon">✅</div>
+          <div className="stat-value">7</div>
+          <div className="stat-label">Task oggi</div>
+        </div>
+
+        <div className="stat-card glass">
+          <div className="stat-icon">🔥</div>
+          <div className="stat-value">12</div>
+          <div className="stat-label">Streak giorni</div>
+        </div>
+      </section>
+
+      <div className="quick-actions">
+        <button className="btn-primary">+ Task</button>
+        <button className="btn-primary">+ Esame</button>
+        <button className="btn-primary">Avvia studio</button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-4">
-        <div className="rounded-2xl bg-slate-900 p-6">
-          <p className="text-slate-400">Corsi attivi</p>
-          <h2 className="mt-2 text-3xl font-bold">4</h2>
-        </div>
+      <div className="dashboard-grid">
+        <section className="section-card glass">
+          <h2>Weekly Progress</h2>
 
-        <div className="rounded-2xl bg-slate-900 p-6">
-          <p className="text-slate-400">Prossimi esami</p>
-          <h2 className="mt-2 text-3xl font-bold">2</h2>
-        </div>
-
-        <div className="rounded-2xl bg-slate-900 p-6">
-          <p className="text-slate-400">Task oggi</p>
-          <h2 className="mt-2 text-3xl font-bold">7</h2>
-        </div>
-
-        <div className="rounded-2xl bg-indigo-600 p-6">
-          <p className="text-indigo-100">Minuti studiati</p>
-          <h2 className="mt-2 text-3xl font-bold">120</h2>
-        </div>
-      </div>
-
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <section className="rounded-2xl bg-slate-900 p-6">
-          <h2 className="mb-4 text-xl font-bold">Task di oggi</h2>
-          <ul className="space-y-3">
-            <li className="rounded-xl bg-slate-800 p-4">Ripassare SQL</li>
-            <li className="rounded-xl bg-slate-800 p-4">Studiare React Router</li>
-            <li className="rounded-xl bg-slate-800 p-4">Preparare appunti esame</li>
-          </ul>
+          <div className="chart-bars">
+            {[
+              ['Lun', '60%'],
+              ['Mar', '80%'],
+              ['Mer', '45%'],
+              ['Gio', '90%'],
+              ['Ven', '70%'],
+              ['Sab', '30%'],
+              ['Dom', '20%'],
+            ].map(([day, height]) => (
+              <div className="chart-item" key={day}>
+                <div className="chart-bar" style={{ height }} />
+                <span>{day}</span>
+              </div>
+            ))}
+          </div>
         </section>
 
-        <section className="rounded-2xl bg-slate-900 p-6">
-          <h2 className="mb-4 text-xl font-bold">Prossimi esami</h2>
-          <ul className="space-y-3">
-            <li className="rounded-xl bg-slate-800 p-4">
-              Programmazione Web — 20 Giugno
-            </li>
-            <li className="rounded-xl bg-slate-800 p-4">
-              Basi di Dati — 28 Giugno
-            </li>
-          </ul>
+        <section className="section-card glass">
+          <h2>Focus Today</h2>
+          <p className="stat-label">Completa 3 task e studia almeno 2 ore.</p>
+
+          <div style={{ marginTop: 18, display: 'grid', gap: 12 }}>
+            <div>✅ Ripassare SQL</div>
+            <div>⬜ Studiare React</div>
+            <div>⬜ Preparare appunti</div>
+          </div>
         </section>
       </div>
     </div>

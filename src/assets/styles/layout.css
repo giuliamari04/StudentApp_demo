@@ -1,0 +1,18 @@
+.app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(99, 102, 241, 0.18), transparent 35%),
+    var(--bg);
+}
+
+.main-content {
+  padding: 24px;
+  padding-bottom: 96px;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    margin-left: 264px;
+    padding: 32px;
+  }
+}

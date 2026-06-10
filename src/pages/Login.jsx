@@ -1,50 +1,66 @@
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
-import { useNavigate, Link } from 'react-router-dom'
+import '../assets/styles/auth.css'
 
 function Login() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   async function handleLogin(e) {
     e.preventDefault()
+    setLoading(true)
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    setLoading(false)
 
     if (error) {
       alert(error.message)
-    } else {
-      navigate('/dashboard')
+      return
     }
+
+    navigate('/dashboard')
   }
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="auth-page">
+      <div className="auth-card glass">
+        <div className="auth-logo">📚</div>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <h1 className="auth-title">Welcome back</h1>
+        <p className="auth-subtitle">Accedi al tuo spazio studio</p>
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <form onSubmit={handleLogin} className="auth-form">
+          <input
+            className="input"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-        <button type="submit">Accedi</button>
-      </form>
+          <input
+            className="input"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-      <p>
-        Non hai un account? <Link to="/register">Registrati</Link>
-      </p>
+          <button className="btn-primary auth-button" disabled={loading}>
+            {loading ? 'Accesso...' : 'Login'}
+          </button>
+        </form>
+
+        <p className="auth-footer">
+          Non hai un account? <Link to="/register">Registrati</Link>
+        </p>
+      </div>
     </div>
   )
 }
