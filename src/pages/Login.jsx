@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import '../assets/styles/auth.css'
+import AppModal from '../components/AppModal.jsx'
 
 function Login() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [modal, setModal] = useState(null)
 
   async function handleLogin(e) {
     e.preventDefault()
@@ -21,7 +23,13 @@ function Login() {
     setLoading(false)
 
     if (error) {
-      alert(error.message)
+      setModal({
+        type: "error",
+        title: "Errore",
+        message: error.message,
+        confirmText: "OK",
+        onConfirm: () => setModal(null),
+      });
       return
     }
 
@@ -37,7 +45,13 @@ function Login() {
     })
 
     if (error) {
-      alert(error.message)
+      setModal({
+        type: "error",
+        title: "Errore",
+        message: error.message,
+        confirmText: "OK",
+        onConfirm: () => setModal(null),
+      });
     }
   }
 
@@ -98,6 +112,7 @@ function Login() {
           Non hai un account? <Link to="/register">Registrati</Link>
         </p>
       </div>
+            {modal && <AppModal {...modal} onCancel={() => setModal(null)} />}
     </div>
   )
 }

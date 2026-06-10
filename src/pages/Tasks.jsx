@@ -1,42 +1,44 @@
-import { useEffect, useState } from 'react'
-import { supabase } from '../supabaseClient'
-import '../assets/styles/pages/dashboard.css'
-import '../assets/styles/pages/tasks.css'
+import { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
+import "../assets/styles/pages/dashboard.css";
+import "../assets/styles/pages/tasks.css";
+import AppModal from "../components/AppModal.jsx";
 
 function Tasks() {
-  const [tasks, setTasks] = useState([])
-  const [title, setTitle] = useState('')
-  const [dueDate, setDueDate] = useState('')
-  const [priority, setPriority] = useState('medium')
-  const [filter, setFilter] = useState('todo')
-  const [editingId, setEditingId] = useState(null)
+  const [tasks, setTasks] = useState([]);
+  const [title, setTitle] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [priority, setPriority] = useState("medium");
+  const [filter, setFilter] = useState("todo");
+  const [editingId, setEditingId] = useState(null);
+  const [modal, setModal] = useState(null);
 
   useEffect(() => {
-    fetchTasks()
-  }, [])
+    fetchTasks();
+  }, []);
 
   async function fetchTasks() {
     const { data, error } = await supabase
-      .from('tasks')
-      .select('*')
-      .order('created_at', { ascending: false })
+      .from("tasks")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
-      alert(error.message)
-      return
+      alert(error.message);
+      return;
     }
 
-    setTasks(data || [])
+    setTasks(data || []);
   }
 
   async function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
 
-    const { data: userData } = await supabase.auth.getUser()
+    const { data: userData } = await supabase.auth.getUser();
 
     if (!userData.user) {
-      alert('Devi essere loggata')
-      return
+      alert("Devi essere loggata");
+      return;
     }
 
     const payload = {
@@ -44,76 +46,87 @@ function Tasks() {
       title,
       due_date: dueDate || null,
       priority,
-    }
+    };
 
     if (editingId) {
       const { error } = await supabase
-        .from('tasks')
+        .from("tasks")
         .update(payload)
-        .eq('id', editingId)
+        .eq("id", editingId);
 
       if (error) {
-        alert(error.message)
-        return
+        setModal({
+          type: "error",
+          title: "Errore",
+          message: error.message,
+          confirmText: "OK",
+          onConfirm: () => setModal(null),
+        });
+        return;
       }
     } else {
-      const { error } = await supabase.from('tasks').insert({
+      const { error } = await supabase.from("tasks").insert({
         ...payload,
         completed: false,
-      })
+      });
 
       if (error) {
-        alert(error.message)
-        return
+        alert(error.message);
+        return;
       }
     }
 
-    setTitle('')
-    setDueDate('')
-    setPriority('medium')
-    setEditingId(null)
-    fetchTasks()
+    setTitle("");
+    setDueDate("");
+    setPriority("medium");
+    setEditingId(null);
+    fetchTasks();
   }
 
   function startEdit(task) {
-    setEditingId(task.id)
-    setTitle(task.title)
-    setDueDate(task.due_date || '')
-    setPriority(task.priority || 'medium')
+    setEditingId(task.id);
+    setTitle(task.title);
+    setDueDate(task.due_date || "");
+    setPriority(task.priority || "medium");
   }
 
   async function toggleTask(task) {
     const { error } = await supabase
-      .from('tasks')
+      .from("tasks")
       .update({ completed: !task.completed })
-      .eq('id', task.id)
+      .eq("id", task.id);
 
     if (error) {
-      alert(error.message)
-      return
+      alert(error.message);
+      return;
     }
 
-    fetchTasks()
+    fetchTasks();
   }
 
   async function deleteTask(id) {
-    if (!confirm('Vuoi eliminare questo task?')) return
-
-    const { error } = await supabase.from('tasks').delete().eq('id', id)
+    const { error } = await supabase.from("tasks").delete().eq("id", id);
 
     if (error) {
-      alert(error.message)
-      return
+      setModal({
+        type: "error",
+        title: "Errore",
+        message: error.message,
+        confirmText: "OK",
+        onConfirm: () => setModal(null),
+      });
+      return;
     }
 
-    fetchTasks()
+    setModal(null);
+    fetchTasks();
   }
 
   const filteredTasks = tasks.filter((task) => {
-    if (filter === 'done') return task.completed
-    if (filter === 'todo') return !task.completed
-    return true
-  })
+    if (filter === "done") return task.completed;
+    if (filter === "todo") return !task.completed;
+    return true;
+  });
 
   return (
     <div className="page">
@@ -149,28 +162,28 @@ function Tasks() {
         </select>
 
         <button className="btn-primary">
-          {editingId ? 'Salva' : 'Aggiungi'}
+          {editingId ? "Salva" : "Aggiungi"}
         </button>
       </form>
 
       <div className="task-tabs">
         <button
-          className={filter === 'todo' ? 'task-tab active' : 'task-tab'}
-          onClick={() => setFilter('todo')}
+          className={filter === "todo" ? "task-tab active" : "task-tab"}
+          onClick={() => setFilter("todo")}
         >
           Da fare
         </button>
 
         <button
-          className={filter === 'done' ? 'task-tab active' : 'task-tab'}
-          onClick={() => setFilter('done')}
+          className={filter === "done" ? "task-tab active" : "task-tab"}
+          onClick={() => setFilter("done")}
         >
           Completati
         </button>
 
         <button
-          className={filter === 'all' ? 'task-tab active' : 'task-tab'}
-          onClick={() => setFilter('all')}
+          className={filter === "all" ? "task-tab active" : "task-tab"}
+          onClick={() => setFilter("all")}
         >
           Tutti
         </button>
@@ -180,20 +193,19 @@ function Tasks() {
         {filteredTasks.map((task) => (
           <article
             key={task.id}
-            className={task.completed ? 'task-card glass done' : 'task-card glass'}
+            className={
+              task.completed ? "task-card glass done" : "task-card glass"
+            }
           >
-            <button
-              className="task-check"
-              onClick={() => toggleTask(task)}
-            />
+            <button className="task-check" onClick={() => toggleTask(task)} />
 
             <div className="task-content">
               <h3>{task.completed ? <s>{task.title}</s> : task.title}</h3>
-              <p>{task.due_date || 'Nessuna scadenza'}</p>
+              <p>{task.due_date || "Nessuna scadenza"}</p>
             </div>
 
-            <span className={`priority ${task.priority || 'medium'}`}>
-              {task.priority || 'medium'}
+            <span className={`priority ${task.priority || "medium"}`}>
+              {task.priority || "medium"}
             </span>
 
             <div className="task-actions">
@@ -201,15 +213,28 @@ function Tasks() {
                 ✎
               </button>
 
-              <button className="delete-btn" onClick={() => deleteTask(task.id)}>
+              <button
+                className="delete-btn"
+                onClick={() =>
+                  setModal({
+                    type: "danger",
+                    title: "Eliminare task?",
+                    message: `Stai per eliminare "${task.title}". Questa azione non può essere annullata.`,
+                    confirmText: "Elimina",
+                    showCancel: true,
+                    onConfirm: () => deleteTask(task.id),
+                  })
+                }
+              >
                 ×
               </button>
             </div>
           </article>
         ))}
       </div>
+      {modal && <AppModal {...modal} onCancel={() => setModal(null)} />}
     </div>
-  )
+  );
 }
 
-export default Tasks
+export default Tasks;

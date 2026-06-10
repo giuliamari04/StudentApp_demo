@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import '../assets/styles/auth.css'
+import AppModal from '../components/AppModal.jsx'
 
 function Register() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [modal, setModal] = useState(null)
 
   async function handleRegister(e) {
     e.preventDefault()
@@ -18,12 +20,26 @@ function Register() {
     setLoading(false)
 
     if (error) {
-      alert(error.message)
+      setModal({
+        type: "error",
+        title: "Errore",
+        message: error.message,
+        confirmText: "OK",
+        onConfirm: () => setModal(null),
+      });
       return
     }
 
-    alert('Registrazione completata.')
-    navigate('/login')
+    setModal({
+      type: "success",
+      title: "Registrazione completata",
+      message: "Ti sei registrato con successo.",
+      confirmText: "OK",
+      onConfirm: () => {
+        setModal(null);
+        navigate('/login');
+      },
+    });
   }
 
   return (
@@ -62,6 +78,7 @@ function Register() {
           Hai già un account? <Link to="/login">Accedi</Link>
         </p>
       </div>
+            {modal && <AppModal {...modal} onCancel={() => setModal(null)} />}
     </div>
   )
 }

@@ -45,7 +45,11 @@
   color: white;
   cursor: pointer;
 }
-
+.exam-title {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 700;
+}
 @media (min-width: 768px) {
   .exam-form {
     grid-template-columns: 1fr 1fr 160px 160px;

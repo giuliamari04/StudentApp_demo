@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import '../assets/styles/pages/dashboard.css'
 import '../assets/styles/pages/timer.css'
+import AppModal from '../components/AppModal.jsx'
 
 const INITIAL_SECONDS = 25 * 60
 
@@ -9,6 +10,7 @@ function Timer() {
   const [seconds, setSeconds] = useState(INITIAL_SECONDS)
   const [running, setRunning] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [modal, setModal] = useState(null)
 
   async function saveSession() {
     setSaving(true)
@@ -29,7 +31,13 @@ function Timer() {
     setSaving(false)
 
     if (error) {
-      alert(error.message)
+      setModal({
+        type: "error",
+        title: "Errore",
+        message: error.message,
+        confirmText: "OK",
+        onConfirm: () => setModal(null),
+      });
     }
   }
 
@@ -116,6 +124,7 @@ function Timer() {
           </div>
         </div>
       </section>
+            {modal && <AppModal {...modal} onCancel={() => setModal(null)} />}
     </div>
   )
 }
