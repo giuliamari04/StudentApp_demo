@@ -1,0 +1,53 @@
+.exam-form {
+  display: grid;
+  gap: 12px;
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.exam-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.exam-card {
+  border-radius: 24px;
+  padding: 22px;
+  border-left: 4px solid var(--primary);
+}
+
+.exam-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.exam-date {
+  text-align: right;
+}
+
+.exam-date strong {
+  font-size: 28px;
+  color: var(--warning);
+}
+
+.exam-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.exam-actions button {
+  border: none;
+  border-radius: 14px;
+  padding: 10px 14px;
+  color: white;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .exam-form {
+    grid-template-columns: 1fr 1fr 160px 160px;
+  }
+}
