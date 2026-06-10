@@ -1,0 +1,113 @@
+.mini-calendar {
+  border-radius: 24px;
+  padding: 22px;
+}
+
+.mini-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.mini-calendar-header h2 {
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.mini-calendar-header button {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.mini-calendar-weekdays,
+.mini-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.mini-calendar-weekdays {
+  margin-bottom: 8px;
+}
+
+.mini-calendar-weekdays span {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mini-calendar-day {
+  min-height: 42px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.mini-calendar-day.has-exam {
+  background: rgba(99, 102, 241, 0.18);
+  color: var(--text);
+  border: 1px solid rgba(99, 102, 241, 0.45);
+}
+
+.exam-dots {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.exam-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.mini-calendar-list {
+  margin-top: 20px;
+}
+
+.mini-calendar-list h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.mini-calendar-exam {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.45);
+  margin-bottom: 8px;
+}
+
+.mini-calendar-exam span {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  font-weight: 700;
+}
+
+.mini-calendar-exam p {
+  margin: 0;
+}
+
+.mini-calendar-empty {
+  color: var(--muted);
+  font-size: 14px;
+}

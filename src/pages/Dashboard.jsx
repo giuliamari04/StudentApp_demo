@@ -2,6 +2,7 @@ import "../assets/styles/pages/dashboard.css";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { Link } from "react-router-dom";
+import MiniCalendar from "../components/MiniCalendar.jsx";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -59,6 +60,57 @@ function Dashboard() {
     };
   }
   const daysUntilNextExam = getNextExam(exams)?.days_left || 0;
+  const today = new Date().toISOString().split("T")[0];
+
+  const todayTasks = tasks
+    .filter((task) => task.due_date === today)
+    .sort((a, b) => Number(a.completed) - Number(b.completed));
+
+  async function toggleTask(task) {
+    const { error } = await supabase
+      .from("tasks")
+      .update({ completed: !task.completed })
+      .eq("id", task.id);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setTasks((prevTasks) =>
+      prevTasks.map((item) =>
+        item.id === task.id ? { ...item, completed: !item.completed } : item,
+      ),
+    );
+  }
+
+  function calculateDailyPages(exam) {
+    if (!exam.number_pages || exam.number_pages <= 0) return null;
+    if (!exam.exam_date || !exam.created_at) return null;
+
+    const startDate = new Date(exam.created_at);
+    const examDate = new Date(exam.exam_date);
+
+    startDate.setHours(0, 0, 0, 0);
+    examDate.setHours(0, 0, 0, 0);
+
+    const diffTime = examDate - startDate;
+    const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (totalDays <= 0) return null;
+
+    return Math.ceil(exam.number_pages / totalDays);
+  }
+
+  const pageStudyPlan = exams
+    .filter((exam) => exam.status !== "done")
+    .map((exam) => ({
+      ...exam,
+      pagesPerDay: calculateDailyPages(exam),
+    }))
+    .filter((exam) => exam.pagesPerDay !== null)
+    .sort((a, b) => new Date(a.exam_date) - new Date(b.exam_date));
+
   return (
     <div className="page">
       <header className="page-header">
@@ -86,18 +138,18 @@ function Dashboard() {
         </div>
 
         <div className="stat-card glass">
-          {(daysUntilNextExam === 0) ? (
-          <>
-            <div className="stat-icon">🎉</div>
-            <div className="stat-value">{daysUntilNextExam}</div>
-            <div className="stat-label">Giorno d'Esame!</div>
-          </>
+          {daysUntilNextExam === 0 ? (
+            <>
+              <div className="stat-icon">🎉</div>
+              <div className="stat-value">{daysUntilNextExam}</div>
+              <div className="stat-label">Giorno d'Esame!</div>
+            </>
           ) : (
-          <>
-            <div className="stat-icon">🔥</div>
-            <div className="stat-value">{daysUntilNextExam}</div>
-            <div className="stat-label">Giorni rimanenti prossimo esame</div>
-          </>
+            <>
+              <div className="stat-icon">🔥</div>
+              <div className="stat-value">{daysUntilNextExam}</div>
+              <div className="stat-label">Giorni rimanenti prossimo esame</div>
+            </>
           )}
         </div>
       </section>
@@ -113,37 +165,49 @@ function Dashboard() {
           Avvia studio
         </Link>
       </div>
-
       <div className="dashboard-grid">
+        <MiniCalendar exams={exams} />
         <section className="section-card glass">
-          <h2>Weekly Progress</h2>
+          <h2>Pagine da studiare oggi</h2>
+          <p className="stat-label">
+            Calcolo automatico basato su pagine totali e data esame.
+          </p>
 
-          <div className="chart-bars">
-            {[
-              ["Lun", "60%"],
-              ["Mar", "80%"],
-              ["Mer", "45%"],
-              ["Gio", "90%"],
-              ["Ven", "70%"],
-              ["Sab", "30%"],
-              ["Dom", "20%"],
-            ].map(([day, height]) => (
-              <div className="chart-item" key={day}>
-                <div className="chart-bar" style={{ height }} />
-                <span>{day}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+          <div className="auto-study-list">
+            {pageStudyPlan.length > 0 ? (
+              pageStudyPlan.map((exam) => (
+                <div key={exam.id} className="auto-study-item">
+                  <div>
+                    <strong>{exam.title}</strong>
+                    <p>Esame il {exam.exam_date}</p>
+                  </div>
 
-        <section className="section-card glass">
-          <h2>Focus Today</h2>
-          <p className="stat-label">Completa 3 task e studia almeno 2 ore.</p>
+                  <span>{exam.pagesPerDay} pag/giorno</span>
+                </div>
+              ))
+            ) : (
+              <p className="dashboard-empty">
+                Nessun piano pagine disponibile.
+              </p>
+            )}
+            <div style={{ marginTop: 18, display: "grid", gap: 14 }}>
+              {todayTasks.length > 0 ? (
+                todayTasks.map((task) => (
+                  <div key={task.id} className="dashboard-task">
+                    <input
+                      type="checkbox"
+                      id={`task-${task.id}`}
+                      checked={task.completed}
+                      onChange={() => toggleTask(task)}
+                    />
 
-          <div style={{ marginTop: 18, display: "grid", gap: 12 }}>
-            <div>✅ Ripassare SQL</div>
-            <div>⬜ Studiare React</div>
-            <div>⬜ Preparare appunti</div>
+                    <label htmlFor={`task-${task.id}`}>{task.title}</label>
+                  </div>
+                ))
+              ) : (
+                <p className="dashboard-empty">🎉 Nessun task per oggi!</p>
+              )}
+            </div>
           </div>
         </section>
       </div>

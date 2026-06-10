@@ -5,12 +5,14 @@ import '../assets/styles/pages/timer.css'
 import AppModal from '../components/AppModal.jsx'
 
 const INITIAL_SECONDS = 25 * 60
+const DAILY_SESSIONS = 6
 
 function Timer() {
   const [seconds, setSeconds] = useState(INITIAL_SECONDS)
   const [running, setRunning] = useState(false)
   const [saving, setSaving] = useState(false)
   const [modal, setModal] = useState(null)
+  const [sessionsLeft, setSessionsLeft] = useState(DAILY_SESSIONS)
 
   async function saveSession() {
     setSaving(true)
@@ -32,13 +34,30 @@ function Timer() {
 
     if (error) {
       setModal({
-        type: "error",
-        title: "Errore",
+        type: 'error',
+        title: 'Errore',
         message: error.message,
-        confirmText: "OK",
+        confirmText: 'OK',
         onConfirm: () => setModal(null),
-      });
+      })
+      return
     }
+
+    setSessionsLeft((prev) => {
+      const nextValue = Math.max(prev - 1, 0)
+
+      if (nextValue === 0) {
+        setModal({
+          type: 'success',
+          title: 'Studio giornaliero completato 🎉',
+          message: 'Hai completato tutte le sessioni previste per oggi. Ottimo lavoro!',
+          confirmText: 'OK',
+          onConfirm: () => setModal(null),
+        })
+      }
+
+      return nextValue
+    })
   }
 
   useEffect(() => {
@@ -61,6 +80,7 @@ function Timer() {
   }, [running])
 
   function toggleTimer() {
+    if (sessionsLeft === 0) return
     setRunning((prev) => !prev)
   }
 
@@ -77,26 +97,42 @@ function Timer() {
   }
 
   const progress = `${((INITIAL_SECONDS - seconds) / INITIAL_SECONDS) * 100}%`
+  const completedToday = DAILY_SESSIONS - sessionsLeft
 
   return (
     <div className="page timer-page">
       <header className="page-header">
         <h1>Timer Studio</h1>
-        <p>Sessione focus da 25 minuti.</p>
+        <p>
+          {sessionsLeft === 0
+            ? 'Studio giornaliero completato 🎉'
+            : 'Sessione focus da 25 minuti.'}
+        </p>
       </header>
 
       <section className="timer-card glass">
         <div className="timer-circle" style={{ '--progress': progress }}>
           <div>
-            <div className="timer-time">{formatTime(seconds)}</div>
+            <div className="timer-time">
+              {sessionsLeft === 0 ? 'Done' : formatTime(seconds)}
+            </div>
+
             <div className="timer-label">
-              {running ? 'Focus in corso' : 'Pronta per iniziare'}
+              {sessionsLeft === 0
+                ? 'Studio giornaliero completato'
+                : running
+                  ? 'Focus in corso'
+                  : 'Pronta per iniziare'}
             </div>
           </div>
         </div>
 
         <div className="timer-controls">
-          <button className="btn-primary timer-main-btn" onClick={toggleTimer}>
+          <button
+            className="btn-primary timer-main-btn"
+            onClick={toggleTimer}
+            disabled={sessionsLeft === 0}
+          >
             {running ? '⏸' : '▶'}
           </button>
 
@@ -114,17 +150,28 @@ function Timer() {
           </div>
 
           <div className="timer-stat glass">
-            <strong>2h</strong>
-            <span>Oggi</span>
+            <strong>{completedToday}</strong>
+            <span>Completate</span>
           </div>
 
           <div className="timer-stat glass">
-            <strong>6</strong>
-            <span>Sessioni</span>
+            <strong>
+              {sessionsLeft === 0 ? 'Completato' : sessionsLeft}
+            </strong>
+            <span>
+              {sessionsLeft === 0 ? 'Studio giornaliero' : 'Sessioni rimaste'}
+            </span>
           </div>
         </div>
+
+        <div className="page-header w-100 mt-8">
+          <p>
+            Ricordati di fare pausa attiva di 10 minuti dopo ogni sessione di studio.
+          </p>
+        </div>
       </section>
-            {modal && <AppModal {...modal} onCancel={() => setModal(null)} />}
+
+      {modal && <AppModal {...modal} onCancel={() => setModal(null)} />}
     </div>
   )
 }
