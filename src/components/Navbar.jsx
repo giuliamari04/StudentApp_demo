@@ -24,6 +24,7 @@ function Navbar() {
           <Link className="nav-link" to="/exams">Esami</Link>
           <Link className="nav-link" to="/tasks">Task</Link>
           <Link className="nav-link" to="/timer">Timer</Link>
+          <Link className="nav-link" to="/study-ai">Study AI</Link>
         </nav>
 
         <div className="sidebar-footer">
@@ -39,6 +40,7 @@ function Navbar() {
         <Link className="nav-link" to="/tasks">✅</Link>
         <Link className="nav-link" to="/exams">📅</Link>
         <Link className="nav-link" to="/timer">⏱️</Link>
+        <Link className="nav-link" to="/study-ai">🤖</Link>
       </nav>
     </>
   )
