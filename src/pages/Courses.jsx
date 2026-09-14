@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
 import "../assets/styles/pages/courses.css";
 import "../assets/styles/pages/dashboard.css";
 import AppModal from "../components/AppModal";
@@ -11,6 +12,7 @@ function Courses() {
   const [credits, setCredits] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [modal, setModal] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCourses();
@@ -173,7 +175,12 @@ function Courses() {
               <button className="edit-btn" onClick={() => startEdit(course)}>
                 Modifica
               </button>
-
+              <button
+                className="edit-btn"
+                onClick={() => navigate(`/courses/${course.id}`)}
+              >
+                Apri corso
+              </button>
               <button
                 className="delete-btn"
                 onClick={() =>

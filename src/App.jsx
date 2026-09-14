@@ -1,16 +1,17 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import Login from './pages/Login.jsx'
-import Register from './pages/Register.jsx'
-import Dashboard from './pages/Dashboard.jsx'
-import Courses from './pages/Courses.jsx'
-import Exams from './pages/Exams.jsx'
-import Tasks from './pages/Tasks.jsx'
-import Timer from './pages/Timer.jsx'
-import StudyAI from './pages/StudyAI.jsx'
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Courses from "./pages/Courses.jsx";
+import Exams from "./pages/Exams.jsx";
+import Tasks from "./pages/Tasks.jsx";
+import Timer from "./pages/Timer.jsx";
+// import StudyAI from "./pages/StudyAI.jsx";
+import SingleCourse from "./pages/SingleCourse.jsx";
 
-import ProtectedRoute from './components/ProtectedRoute.jsx'
-import AppLayout from './components/AppLayout.jsx'
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import AppLayout from "./components/AppLayout.jsx";
 
 function App() {
   return (
@@ -74,19 +75,18 @@ function App() {
           </ProtectedRoute>
         }
       />
-
       <Route
-        path="/study-ai"
+        path="/courses/:courseId"
         element={
           <ProtectedRoute>
             <AppLayout>
-              <StudyAI />
+              <SingleCourse />
             </AppLayout>
           </ProtectedRoute>
         }
       />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
