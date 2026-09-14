@@ -582,58 +582,56 @@ function SingleCourse() {
   // DOWNLOAD DOCUMENTO
   //
 
- async function handleDownloadDocument(studyDocument) {
-  try {
-    setSuccessMessage("");
-    setErrorMessage("");
+  async function handleDownloadDocument(studyDocument) {
+    try {
+      setSuccessMessage("");
+      setErrorMessage("");
 
-    const {
-      data: { session },
-      error: sessionError,
-    } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
-    if (sessionError) {
-      throw sessionError;
+      if (sessionError) {
+        throw sessionError;
+      }
+
+      const user = session?.user;
+
+      if (!user) {
+        throw new Error("Devi essere autenticato.");
+      }
+
+      // Controllo sicurezza
+      if (
+        studyDocument.user_id !== user.id ||
+        studyDocument.course_id !== courseId
+      ) {
+        throw new Error("Non puoi aprire questo documento.");
+      }
+
+      const { data, error } = await supabase.storage
+        .from("study-documents")
+        .createSignedUrl(studyDocument.file_path, 60);
+
+      if (error) {
+        throw new Error(
+          `Errore durante l'apertura del documento: ${error.message}`,
+        );
+      }
+
+      if (!data?.signedUrl) {
+        throw new Error("Impossibile creare il link al documento.");
+      }
+
+      // APRE IL PDF NEL VISUALIZZATORE PDF DEL BROWSER
+      window.open(data.signedUrl, "_blank");
+    } catch (error) {
+      console.error("ERRORE APERTURA DOCUMENTO:", error);
+
+      setErrorMessage(error.message || "Impossibile aprire il documento.");
     }
-
-    const user = session?.user;
-
-    if (!user) {
-      throw new Error("Devi essere autenticato.");
-    }
-
-    // Controllo sicurezza
-    if (
-      studyDocument.user_id !== user.id ||
-      studyDocument.course_id !== courseId
-    ) {
-      throw new Error("Non puoi aprire questo documento.");
-    }
-
-    const { data, error } = await supabase.storage
-      .from("study-documents")
-      .createSignedUrl(studyDocument.file_path, 60);
-
-    if (error) {
-      throw new Error(
-        `Errore durante l'apertura del documento: ${error.message}`
-      );
-    }
-
-    if (!data?.signedUrl) {
-      throw new Error("Impossibile creare il link al documento.");
-    }
-
-    // APRE IL PDF NEL VISUALIZZATORE PDF DEL BROWSER
-    window.open(data.signedUrl, "_blank");
-  } catch (error) {
-    console.error("ERRORE APERTURA DOCUMENTO:", error);
-
-    setErrorMessage(
-      error.message || "Impossibile aprire il documento."
-    );
   }
-}
   // ============================================================
   // APRE MODALE ELIMINAZIONE
   // ============================================================
@@ -999,8 +997,10 @@ function SingleCourse() {
           <div className="documents-list">
             {documents.map((document) => (
               <div className="document-item" key={document.id}>
+                {/* ICONA */}
                 <div className="document-icon">📄</div>
 
+                {/* INFORMAZIONI */}
                 <div className="document-info">
                   <strong>{document.file_name}</strong>
 
@@ -1019,7 +1019,6 @@ function SingleCourse() {
                     {document.created_at && (
                       <>
                         {" · "}
-
                         {new Date(document.created_at).toLocaleDateString(
                           "it-IT",
                         )}
@@ -1028,7 +1027,6 @@ function SingleCourse() {
                   </small>
 
                   {/* STATUS */}
-
                   {document.status && (
                     <small>
                       {document.status === "processed"
@@ -1042,30 +1040,38 @@ function SingleCourse() {
                   )}
                 </div>
 
-                {/* DOWNLOAD */}
-                <button
-                  type="button"
-                  className="download-document-button"
-                  onClick={() => handleDownloadDocument(document)}
-                  title="Scarica documento"
-                >
-                  📄
-                </button>
-                {/* DELETE */}
+                {/* ======================================================
+      AZIONI DOCUMENTO
+      ====================================================== */}
 
-                <button
-                  type="button"
-                  className="delete-document-button"
-                  onClick={() => handleDeleteDocument(document)}
-                  disabled={deletingDocumentId === document.id}
-                  title="Elimina documento"
-                >
-                  {deletingDocumentId === document.id ? (
-                    <img src={spinner} alt="Eliminazione" />
-                  ) : (
-                    "🗑️"
-                  )}
-                </button>
+                <div className="document-actions">
+                  {/* APRI */}
+                  <button
+                    type="button"
+                    className="download-document-button"
+                    onClick={() => handleDownloadDocument(document)}
+                    title="Apri documento"
+                  >
+                    📄 <span>Apri</span>
+                  </button>
+
+                  {/* ELIMINA */}
+                  <button
+                    type="button"
+                    className="delete-document-button"
+                    onClick={() => handleDeleteDocument(document)}
+                    disabled={deletingDocumentId === document.id}
+                    title="Elimina documento"
+                  >
+                    {deletingDocumentId === document.id ? (
+                      <img src={spinner} alt="Eliminazione" />
+                    ) : (
+                      <>
+                        🗑️ <span>Elimina</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

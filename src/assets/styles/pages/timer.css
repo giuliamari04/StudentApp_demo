@@ -16,6 +16,7 @@
   border-radius: 999px;
   display: grid;
   place-items: center;
+
   background:
     radial-gradient(circle, var(--bg) 58%, transparent 60%),
     conic-gradient(var(--primary) var(--progress), var(--border) 0);
@@ -66,14 +67,182 @@
 .timer-stat {
   border-radius: 18px;
   padding: 16px;
+  min-width: 0;
 }
 
 .timer-stat strong {
   display: block;
   font-size: 20px;
+  overflow-wrap: anywhere;
 }
 
 .timer-stat span {
   color: var(--muted);
   font-size: 12px;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+  .timer-page {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+
+  .timer-page .page-header {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .timer-page .page-header h1 {
+    font-size: 28px;
+    line-height: 1.15;
+  }
+
+  .timer-page .page-header p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .timer-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 22px 14px;
+    border-radius: 24px;
+  }
+
+  .timer-circle {
+    width: min(220px, 70vw);
+    height: min(220px, 70vw);
+    margin: 22px auto;
+  }
+
+  .timer-time {
+    font-size: clamp(38px, 12vw, 48px);
+    line-height: 1;
+  }
+
+  .timer-label {
+    max-width: 180px;
+    margin: 8px auto 0;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .timer-controls {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .timer-main-btn,
+  .timer-secondary-btn {
+    width: 58px;
+    height: 58px;
+  }
+
+  .timer-main-btn {
+    font-size: 20px;
+  }
+
+  .timer-secondary-btn {
+    font-size: 20px;
+  }
+
+  .timer-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .timer-stat {
+    padding: 12px 6px;
+    border-radius: 14px;
+    min-width: 0;
+  }
+
+  .timer-stat strong {
+    font-size: 17px;
+    line-height: 1.2;
+  }
+
+  .timer-stat span {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .timer-page .w-100 {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .timer-page .mt-8 {
+    margin-top: 24px;
+  }
+
+  .timer-page .mt-8 p {
+    margin-bottom: 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+/* =========================
+   MOBILE PICCOLO
+   ========================= */
+
+@media (max-width: 380px) {
+  .timer-page {
+    padding: 0 8px;
+  }
+
+  .timer-card {
+    padding: 18px 10px;
+    border-radius: 22px;
+  }
+
+  .timer-circle {
+    width: 200px;
+    height: 200px;
+    margin: 18px auto;
+  }
+
+  .timer-time {
+    font-size: 36px;
+  }
+
+  .timer-label {
+    font-size: 12px;
+    max-width: 160px;
+  }
+
+  .timer-controls {
+    margin-bottom: 20px;
+  }
+
+  .timer-main-btn,
+  .timer-secondary-btn {
+    width: 54px;
+    height: 54px;
+  }
+
+  .timer-stats {
+    gap: 6px;
+  }
+
+  .timer-stat {
+    padding: 10px 4px;
+  }
+
+  .timer-stat strong {
+    font-size: 15px;
+  }
+
+  .timer-stat span {
+    font-size: 9px;
+  }
 }
