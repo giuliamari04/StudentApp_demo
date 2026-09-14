@@ -120,6 +120,28 @@ function Exams() {
     fetchExams();
   }
 
+  function getExamStatus(status) {
+  switch (status) {
+    case 'planned':
+      return <span className="status planned">Pianificato</span>
+
+    case 'in_progress':
+      return <span className="status in_progress">In studio</span>
+
+    case 'ready':
+      return <span className="status ready">Pronta</span>
+
+    case 'done':
+      return <span className="status done">Superato</span>
+
+    case 'failed':
+      return <span className="status failed">Non superato</span>
+
+    default:
+      return <span className="status">N/D</span>
+  }
+}
+
   function daysLeft(date) {
     const today = new Date();
     const exam = new Date(date);
@@ -184,7 +206,7 @@ function Exams() {
               <div>
                 <h2 className="exam-title">{exam.title}</h2>
                 <p>{exam.exam_date}</p>
-                <p>Stato: {exam.status}</p>
+                    <p>  Stato: {getExamStatus(exam.status)}</p>
 
                 {exam.number_pages > 0 && <p>📄 {exam.number_pages} pagine</p>}
               </div>
